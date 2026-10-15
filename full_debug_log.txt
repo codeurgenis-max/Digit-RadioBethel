@@ -1,0 +1,79 @@
+Launching lib/main.dart on TECNO KM4 in debug mode...
+Running Gradle task 'assembleDebug'...                          
+Your project is configured with Android NDK 26.3.11579264, but the following plugin(s) depend on a different Android NDK version:
+- audio_session requires Android NDK 27.0.12077973
+- flutter_inappwebview_android requires Android NDK 27.0.12077973
+- just_audio requires Android NDK 27.0.12077973
+- package_info_plus requires Android NDK 27.0.12077973
+- path_provider_android requires Android NDK 27.0.12077973
+- shared_preferences_android requires Android NDK 27.0.12077973
+- sqflite_android requires Android NDK 27.0.12077973
+- url_launcher_android requires Android NDK 27.0.12077973
+- video_player_android requires Android NDK 27.0.12077973
+- wakelock_plus requires Android NDK 27.0.12077973
+Fix this issue by using the highest Android NDK version (they are backward compatible).
+Add the following to /Users/mac/Documents/eglise/mobile/android/app/build.gradle.kts:
+
+    android {
+        ndkVersion = "27.0.12077973"
+        ...
+    }
+Running Gradle task 'assembleDebug'...                             26,6s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+I/flutter ( 6339): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(61)] Using the Impeller rendering backend (Vulkan).
+Installing build/app/outputs/flutter-apk/app-debug.apk...           6,3s
+I/flutter ( 6751): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(61)] Using the Impeller rendering backend (Vulkan).
+Syncing files to device TECNO KM4...                               874ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on TECNO KM4 is available at: http://127.0.0.1:64519/xlNkOn-fSWA=/
+D/FdLeakLice( 6751): FdLeakCheck app is not systemapp!!!
+The Flutter DevTools debugger and profiler on TECNO KM4 is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:64519/xlNkOn-fSWA=/
+I/lise.eglise_app( 6751): hook_module_init libgui_unisoc_utils.so over, map size:3, library handle:0xd489e07be21b4b69
+I/UnisocBufferQueueHelper( 6751): Unisoc-Graphics: UnisocBufferQueueHelper create, this:0xb40000706f40b8e0, size:88
+I/lise.eglise_app( 6751): createUnisocBufferQueueHelperFactory success, get instance 0xb40000706f40b8e0
+I/lise.eglise_app( 6751): Unisoc-Graphics: UnisocFrameRecord create, this:0xb400006f28eb4280, size:296, enable:0
+I/lise.eglise_app( 6751): createUnisocFrameRecordFactory success, get instance 0xb400006f28eb4280
+I/lise.eglise_app( 6751): Compiler allocated 5001KB to compile void android.view.ViewRootImpl.performTraversals()
+W/libc    ( 6751): Access denied finding property "persist.vendor.gpu.fbc"
+I/mali_gralloc( 6751): Unisoc: get compress property: persist.vendor.gpu.fbc (1)
+E/mali_gralloc( 6751): Requested R8 format is not supported with this allocator. R8 format is only supported with the AIDL allocator
+E/mali_gralloc( 6751): ERROR: Unrecognized and/or unsupported format R8 and usage TEXTURE + RENDER + HWC
+E/mali_gralloc( 6751): ERROR: Unrecognized and/or unsupported format RGBA_10101010 and usage TEXTURE + RENDER + HWC
+E/mali_gralloc( 6751): Requested R8 format is not supported with this allocator. R8 format is only supported with the AIDL allocator
+E/mali_gralloc( 6751): ERROR: Unrecognized and/or unsupported format R8 and usage TEXTURE + RENDER + HWC
+E/mali_gralloc( 6751): ERROR: Unrecognized and/or unsupported format RGBA_10101010 and usage TEXTURE + RENDER + HWC
+D/lise.eglise_app( 6751): UniReport init success
+D/mali_gralloc( 6751): register: id=29e0001b56d, handle=0xb400006f34a5ff80, importpid=6751
+W/libc    ( 6751): Access denied finding property "persist.vendor.gpu.ionmemtrack"
+I/mali_gralloc( 6751): initIonKernelMemtrack open devices:/dev/systemheap success, fd:235
+D/mali_gralloc( 6751): register: id=29e0001b56d, handle=0xb400006f34a60300, importpid=6751
+D/mali_gralloc( 6751): unregister: id=29e0001b56d, handle=0xb400006f34a60300, base=0x0, importpid=6751, clone_count=1
+D/mali_gralloc( 6751): register: id=29e0001b56e, handle=0xb400006f34a60300, importpid=6751
+D/mali_gralloc( 6751): register: id=29e0001b56e, handle=0xb400006f34a603e0, importpid=6751
+D/mali_gralloc( 6751): unregister: id=29e0001b56e, handle=0xb400006f34a603e0, base=0x0, importpid=6751, clone_count=1
+D/mali_gralloc( 6751): register: id=29e0001b56f, handle=0xb400006f34a603e0, importpid=6751
+D/mali_gralloc( 6751): register: id=29e0001b56f, handle=0xb400006f34a604c0, importpid=6751
+D/mali_gralloc( 6751): unregister: id=29e0001b56f, handle=0xb400006f34a604c0, base=0x0, importpid=6751, clone_count=1
+D/mali_gralloc( 6751): register: id=29e0001b570, handle=0xb400006f34a604c0, importpid=6751
+D/mali_gralloc( 6751): register: id=29e0001b570, handle=0xb400006f34a605a0, importpid=6751
+D/mali_gralloc( 6751): unregister: id=29e0001b570, handle=0xb400006f34a605a0, base=0x0, importpid=6751, clone_count=1
+D/mali_gralloc( 6751): register: id=29e0001b571, handle=0xb400006f34a605a0, importpid=6751
+D/mali_gralloc( 6751): register: id=29e0001b571, handle=0xb400006f34a60680, importpid=6751
+D/mali_gralloc( 6751): unregister: id=29e0001b571, handle=0xb400006f34a60680, base=0x0, importpid=6751, clone_count=1
+W/Choreographer( 6751): Already have a pending vsync event.  There should only be one at a time.
+I/Choreographer( 6751): Skipped 41 frames!  The application may be doing too much work on its main thread.
+D/mali_gralloc( 6751): register: id=29e0001b572, handle=0xb400006f34a60760, importpid=6751
+D/LogUtil ( 6751): The value of DEBUG is: false
+I/HWUI    ( 6751): Davey! duration=718ms; Flags=1, FrameTimelineVsyncId=53694248, IntendedVsync=213154865900668, Vsync=213155549234015, InputEventId=0, HandleInputStart=213155564431307, AnimationStart=213155564433653, PerformTraversalsStart=213155564434999, DrawStart=213155569049422, FrameDeadline=213154895234002, FrameInterval=213155563791422, FrameStartTime=16666667, SyncQueued=213155572656768, SyncStart=213155572804768, IssueDrawCommandsStart=213155573196345, SwapBuffers=213155583324961, FrameCompleted=213155584794230, DequeueBufferDuration=2323423, QueueBufferDuration=389231, GpuCompleted=213155584794230, SwapBuffersCompleted=213155583938114, DisplayPresentTime=7953638912602958953, CommandSubmissionCompleted=213155583324961, 
+D/LogUtil ( 6751): mLogd_enable
+D/ProfileInstaller( 6751): Installing profile for com.eglise.eglise_app
+W/lise.eglise_app( 6751): userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+Lost connection to device.
