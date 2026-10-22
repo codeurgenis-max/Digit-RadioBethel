@@ -14,7 +14,20 @@ import '../services/web_audio_player.dart' if (dart.library.io) '../services/web
 
 class ChurchProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer(
+    audioLoadConfiguration: const AudioLoadConfiguration(
+      androidLoadControl: AndroidLoadControl(
+        minBufferDuration: Duration(seconds: 15),
+        maxBufferDuration: Duration(seconds: 45),
+        bufferForPlaybackDuration: Duration(seconds: 3),
+        bufferForPlaybackAfterRebufferDuration: Duration(seconds: 5),
+      ),
+      darwinLoadControl: DarwinLoadControl(
+        automaticallyWaitsToMinimizeStalling: true,
+        preferredForwardBufferDuration: Duration(seconds: 15),
+      ),
+    ),
+  );
   // Web-specific audio player for streaming on browsers
   final _webPlayer = kIsWeb ? WebAudioPlayer() : null;
 
