@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 import '../providers/church_provider.dart';
-import '../utils/app_colors.dart';
-import '../widgets/music_visualizer.dart';
+import 'podcast_list_screen.dart';
 
 class RadioScreen extends StatefulWidget {
   const RadioScreen({super.key});
@@ -16,12 +14,13 @@ class RadioScreen extends StatefulWidget {
 }
 
 class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+  late AnimationController _glowController;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _glowController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
@@ -29,47 +28,29 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _glowController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Radio Direct'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        titleTextStyle: GoogleFonts.poppins(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Consumer<ChurchProvider>(
-        builder: (context, provider, child) {
-          final radio = provider.radio;
+    return Consumer<ChurchProvider>(
+      builder: (context, provider, child) {
+        final radio = provider.radio;
 
-          if (radio == null) {
-            return const Center(
-              child: Text(
-                'Radio non disponible',
-                style: TextStyle(color: Colors.white70),
-              ),
-            );
-          }
-
-          return Stack(
+        return Scaffold(
+          backgroundColor: const Color(0xFF0A0806),
+          body: Stack(
             children: [
-              // 1. Background Image with Dark Overlay
+              // 1. Fond ambiance studio radio sombre avec reflets dorés
               Positioned.fill(
                 child: Image.asset(
-                  'assets/micropc.jpg', // User requested a background image
+                  'assets/micropc.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
+
+              // Overlay sombre dégradé élégant
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -77,228 +58,613 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        const Color(0xFF0F172A).withOpacity(0.8),
-                        const Color(0xFF1E293B).withOpacity(0.95),
+                        Colors.black.withValues(alpha: 0.65),
+                        const Color(0xFF0F0B06).withValues(alpha: 0.85),
+                        const Color(0xFF0A0704).withValues(alpha: 0.98),
+                      ],
+                      stops: const [0.0, 0.5, 0.95],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Motifs géométriques dorés discrets en bas/coins
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 180,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        const Color(0xFFD4AF37).withValues(alpha: 0.08),
                       ],
                     ),
                   ),
                 ),
               ),
 
+              // Contenu principal
               SafeArea(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-                    child: Column(
+                child: Column(
+                  children: [
+                    // --- HEADER SUPÉRIEUR ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Menu Hamburger
+                          IconButton(
+                            onPressed: () {
+                              Scaffold.maybeOf(context)?.openDrawer();
+                            },
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.35),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                ),
+                              ),
+                              child: const Icon(Icons.menu_rounded, color: Colors.white, size: 22),
+                            ),
+                          ),
+
+                          // Logo titre central
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Digit',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'radio\n',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFFFBBF24),
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'Bethel',
+                                      style: GoogleFonts.dancingScript(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFFFBBF24),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'LA VOIX DE FOI',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white70,
+                                  letterSpacing: 3,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // Badge "EN DIRECT" + icône ondes radio
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDC2626).withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: const Color(0xFFDC2626).withValues(alpha: 0.6),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    AnimatedBuilder(
+                                      animation: _glowController,
+                                      builder: (context, child) => Container(
+                                        width: 7,
+                                        height: 7,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color(0xFFEF4444).withValues(
+                                            alpha: 0.4 + (0.6 * _glowController.value),
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFFEF4444).withValues(alpha: 0.6),
+                                              blurRadius: 6,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'EN DIRECT',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(
+                                Icons.podcasts_rounded,
+                                color: Colors.white,
+                                size: 22,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Spacer(flex: 1),
+
+                    // --- VISUEL CENTRAL : LOGO CIRCULAIRE AVEC ONDES DORÉES ---
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 20),
-                        
-                        // Rotating & Glowing Logo
+                        // Ondes sonores gauches
+                        _buildWaveBars(isLeft: true, isPlaying: provider.isRadioPlaying),
+
+                        const SizedBox(width: 14),
+
+                        // Cercle central lumineux
                         AnimatedBuilder(
-                          animation: _animationController,
+                          animation: _glowController,
                           builder: (context, child) {
                             return Container(
-                              width: 240, // Reduced slightly for better compatibility
-                              height: 240,
+                              width: 190,
+                              height: 190,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                boxShadow: provider.isRadioPlaying
-                                    ? [
-                                        BoxShadow(
-                                          color: AppColors.orange500.withOpacity(0.3 * _animationController.value),
-                                          blurRadius: 40,
-                                          spreadRadius: 15,
-                                        ),
-                                      ]
-                                    : [],
+                                gradient: const RadialGradient(
+                                  colors: [
+                                    Color(0xFFFFFBEB),
+                                    Color(0xFFFEF3C7),
+                                    Color(0xFFFDE68A),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: const Color(0xFFF59E0B),
+                                  width: 4,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFF59E0B).withValues(
+                                      alpha: provider.isRadioPlaying
+                                          ? (0.45 + 0.35 * _glowController.value)
+                                          : 0.25,
+                                    ),
+                                    blurRadius: provider.isRadioPlaying ? 45 : 20,
+                                    spreadRadius: provider.isRadioPlaying ? 10 : 2,
+                                  ),
+                                ],
                               ),
                               child: child,
                             );
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white24, width: 4),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(120),
-                              child: Padding(
-                                padding: EdgeInsets.zero,
-                                child: Image.asset(
-                                  'assets/logo_new.png',
-                                  fit: BoxFit.cover,
-                                ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Image.asset(
+                                'assets/logo_new.png',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
                         ),
-                        
-                        const SizedBox(height: 40),
 
-                        // Radio Info
-                        Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                        const SizedBox(width: 14),
+
+                        // Ondes sonores droites
+                        _buildWaveBars(isLeft: false, isPlaying: provider.isRadioPlaying),
+                      ],
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // Pilule rouge "● EN DIRECT" sous le cercle
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xFFDC2626),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFFEF4444),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'EN DIRECT',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // --- TITRE ET SOUS-TITRE DU DIRECT ---
+                    Text(
+                      radio?.currentTheme ?? 'La Voix de Foi',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      radio?.currentPastor != null
+                          ? 'Par ${radio!.currentPastor}'
+                          : 'La Voix De Foi',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70,
+                      ),
+                    ),
+
+                    const Spacer(flex: 1),
+
+                    // --- BARRE DE PROGRESSION DORÉE ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      child: StreamBuilder<Duration>(
+                        stream: provider.positionStream,
+                        builder: (context, posSnapshot) {
+                          final position = posSnapshot.data ?? Duration.zero;
+                          return StreamBuilder<Duration?>(
+                            stream: provider.durationStream,
+                            builder: (context, durSnapshot) {
+                              final total = durSnapshot.data ?? const Duration(hours: 24);
+
+                              return ProgressBar(
+                                progress: position,
+                                total: total,
+                                buffered: Duration.zero,
+                                onSeek: null, // Stream live direct
+                                barHeight: 3.5,
+                                baseBarColor: Colors.white.withValues(alpha: 0.15),
+                                progressBarColor: const Color(0xFFFBBF24),
+                                thumbColor: const Color(0xFFFBBF24),
+                                thumbRadius: 6,
+                                thumbGlowRadius: 16,
+                                timeLabelLocation: TimeLabelLocation.below,
+                                timeLabelTextStyle: GoogleFonts.poppins(
+                                  color: Colors.white60,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // --- RANGÉE DE CONTRÔLES (Timer, Précédent, PLAY/PAUSE, Suivant, Favori) ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // 1. Minuterie de mise en veille
+                          _buildCircleIconButton(
+                            icon: Icons.timer_outlined,
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Minuterie de veille : 30 minutes'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          ),
+
+                          // 2. Précédent
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.skip_previous_rounded,
+                              color: Colors.white,
+                              size: 38,
+                            ),
+                          ),
+
+                          // 3. GROS BOUTON CENTRAL DORÉ PLAY / PAUSE
+                          GestureDetector(
+                            onTap: () => provider.toggleRadio(),
+                            child: Container(
+                              width: 76,
+                              height: 76,
                               decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.red.withOpacity(0.3)),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AnimatedBuilder(
-                                    animation: _animationController,
-                                    builder: (context, child) {
-                                      return Opacity(
-                                        opacity: 0.5 + (0.5 * _animationController.value),
-                                        child: const Icon(Icons.sensors, color: Colors.red, size: 16),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'EN DIRECT',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.red,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.5,
-                                    ),
+                                shape: BoxShape.circle,
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFFDE68A),
+                                    Color(0xFFF59E0B),
+                                    Color(0xFFD97706),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFF59E0B).withValues(alpha: 0.5),
+                                    blurRadius: 22,
+                                    spreadRadius: 3,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              radio.currentTheme ?? 'Ma Paroisse Digitale',
-                              style: GoogleFonts.poppins(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              radio.currentPastor != null ? 'Par ${radio.currentPastor}' : 'La Voix De Foi',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: Colors.white70,
-                                letterSpacing: 0.5,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 40),
-
-                        // Audio Spectrum Visualizer
-                        SizedBox(
-                          height: 50,
-                          child: MusicVisualizer(
-                            isPlaying: provider.isRadioPlaying,
-                            color: AppColors.orange500,
-                            barCount: 30,
-                          ),
-                        ),
-
-                        const SizedBox(height: 48),
-
-                        // Progress Bar
-                        StreamBuilder<Duration>(
-                          stream: provider.positionStream,
-                          builder: (context, snapshot) {
-                            final position = snapshot.data ?? Duration.zero;
-                            return StreamBuilder<Duration?>(
-                              stream: provider.durationStream,
-                              builder: (context, snapshot) {
-                                final total = snapshot.data ?? const Duration(hours: 24);
-                                final isLive = snapshot.data == null;
-
-                                return ProgressBar(
-                                  progress: position,
-                                  total: total,
-                                  buffered: Duration.zero,
-                                  onSeek: isLive ? null : (duration) {
-                                    provider.seek(duration);
-                                  },
-                                  barHeight: 4,
-                                  baseBarColor: Colors.white24,
-                                  progressBarColor: AppColors.orange500,
-                                  bufferedBarColor: Colors.white12,
-                                  thumbColor: isLive ? Colors.transparent : AppColors.orange500,
-                                  thumbRadius: isLive ? 0 : 6,
-                                  timeLabelTextStyle: const TextStyle(color: Colors.white70),
-                                  timeLabelLocation: TimeLabelLocation.below,
-                                );
-                              },
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Play/Pause Button
-                        GestureDetector(
-                          onTap: () => provider.toggleRadio(),
-                          child: Container(
-                            width: 84,
-                            height: 84,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: provider.isLoading 
-                              ? const Center(
-                                  child: SizedBox(
-                                    height: 32,
-                                    width: 32,
-                                    child: CircularProgressIndicator(
-                                      color: Color(0xFF0F172A),
-                                      strokeWidth: 3,
+                              child: provider.isLoading
+                                  ? const Center(
+                                      child: SizedBox(
+                                        width: 28,
+                                        height: 28,
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xFF0F172A),
+                                          strokeWidth: 3,
+                                        ),
+                                      ),
+                                    )
+                                  : Icon(
+                                      provider.isRadioPlaying
+                                          ? Icons.pause_rounded
+                                          : Icons.play_arrow_rounded,
+                                      size: 46,
+                                      color: const Color(0xFF0A0806),
                                     ),
-                                  ),
-                                )
-                              : Icon(
-                                  provider.isRadioPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                  size: 52,
-                                  color: const Color(0xFF0F172A),
-                                ),
+                            ),
                           ),
-                        ),
-                        
-                        const SizedBox(height: 16),
-                        Text(
-                          provider.isLoading 
-                              ? 'Synchronisation...' 
-                              : (provider.isRadioPlaying ? 'Pause' : 'Lecture'),
-                          style: GoogleFonts.poppins(
-                            color: Colors.white60,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1,
+
+                          // 4. Suivant
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.skip_next_rounded,
+                              color: Colors.white,
+                              size: 38,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
+
+                          // 5. Bouton Favori (Cœur)
+                          _buildCircleIconButton(
+                            icon: _isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: _isFavorite ? const Color(0xFFEF4444) : Colors.white,
+                            onTap: () {
+                              setState(() {
+                                _isFavorite = !_isFavorite;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+
+                    const Spacer(flex: 1),
+
+                    // --- LES 4 CARTES D'ACTIONS RAPIDES ---
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          _buildActionCard(
+                            icon: Icons.mic_rounded,
+                            title: 'Émissions',
+                            subtitle: 'Écouter',
+                            onTap: () {},
+                          ),
+                          const SizedBox(width: 10),
+                          _buildActionCard(
+                            icon: Icons.podcasts_rounded,
+                            title: 'Podcasts',
+                            subtitle: 'Découvrir',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const PodcastListScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          _buildActionCard(
+                            icon: Icons.music_note_rounded,
+                            title: 'Musique',
+                            subtitle: 'Nos playlists',
+                            onTap: () {},
+                          ),
+                          const SizedBox(width: 10),
+                          _buildActionCard(
+                            icon: Icons.more_horiz_rounded,
+                            title: 'Plus',
+                            subtitle: 'Encore +',
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
             ],
-          );
-        },
+          ),
+        );
+      },
+    );
+  }
+
+  // Petit bouton rond sombre translucide (Timer / Cœur)
+  Widget _buildCircleIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+    Color color = Colors.white,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withValues(alpha: 0.08),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.12),
+          ),
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
+    );
+  }
+
+  // Ondes dorées de chaque côté du cercle
+  Widget _buildWaveBars({required bool isLeft, required bool isPlaying}) {
+    final heights = [14.0, 22.0, 34.0, 44.0, 28.0];
+    final displayHeights = isLeft ? heights : heights.reversed.toList();
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: displayHeights.map((h) {
+        return AnimatedBuilder(
+          animation: _glowController,
+          builder: (context, child) {
+            final dynamicHeight = isPlaying
+                ? (h * (0.6 + 0.4 * _glowController.value))
+                : (h * 0.5);
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              width: 3.5,
+              height: dynamicHeight,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFBBF24),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: isPlaying
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFFFBBF24).withValues(alpha: 0.6),
+                          blurRadius: 4,
+                        ),
+                      ]
+                    : [],
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  // Carte d'action rapide carrée semi-transparente
+  Widget _buildActionCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.45),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: const Color(0xFFFBBF24), size: 24),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white54,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
