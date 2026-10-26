@@ -239,13 +239,7 @@ class _RadioScreenState extends State<RadioScreen> with TickerProviderStateMixin
                               height: 190,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                gradient: const RadialGradient(
-                                  colors: [
-                                    Color(0xFFFFFBEB),
-                                    Color(0xFFFEF3C7),
-                                    Color(0xFFFDE68A),
-                                  ],
-                                ),
+                                color: Colors.white,
                                 border: Border.all(
                                   color: const Color(0xFFF59E0B),
                                   width: 4,
