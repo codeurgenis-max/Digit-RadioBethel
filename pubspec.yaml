@@ -82,6 +82,7 @@ flutter:
   assets:
     - assets/logo.png
     - assets/logo_new.png
+    - assets/digitradio_circle_clean.png
     - assets/splash_bg.png
     - assets/sd.jpg
     - assets/micropc.jpg

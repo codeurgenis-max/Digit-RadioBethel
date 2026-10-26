@@ -148,7 +148,7 @@ class _RadioScreenState extends State<RadioScreen> with TickerProviderStateMixin
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'LA VOIX DE FOI',
+                                '',
                                 style: GoogleFonts.poppins(
                                   fontSize: 8,
                                   fontWeight: FontWeight.w600,
@@ -259,13 +259,10 @@ class _RadioScreenState extends State<RadioScreen> with TickerProviderStateMixin
                               child: child,
                             );
                           },
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Image.asset(
-                                'assets/logo_new.png',
-                                fit: BoxFit.contain,
-                              ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/digitradio_circle_clean.png',
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
