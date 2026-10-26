@@ -103,118 +103,67 @@ class _RadioScreenState extends State<RadioScreen> with TickerProviderStateMixin
                   children: [
                     // --- HEADER SUPÉRIEUR ---
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Espace équilibré à gauche pour centrer le logo
-                          const SizedBox(width: 48),
-
-                          // Logo titre central
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Digit',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: 'radio\n',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color(0xFFFBBF24),
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: 'Bethel',
-                                      style: GoogleFonts.dancingScript(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFFFBBF24),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                '',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white70,
-                                  letterSpacing: 3,
-                                ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDC2626).withValues(alpha: 0.18),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: const Color(0xFFDC2626).withValues(alpha: 0.7),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+                                blurRadius: 12,
+                                spreadRadius: 1,
                               ),
                             ],
                           ),
-
-                          // Badge "EN DIRECT" + icône ondes radio
-                          Row(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFDC2626).withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: const Color(0xFFDC2626).withValues(alpha: 0.6),
+                              AnimatedBuilder(
+                                animation: _glowController,
+                                builder: (context, child) => Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: const Color(0xFFEF4444).withValues(
+                                      alpha: 0.4 + (0.6 * _glowController.value),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFFEF4444).withValues(alpha: 0.8),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    AnimatedBuilder(
-                                      animation: _glowController,
-                                      builder: (context, child) => Container(
-                                        width: 7,
-                                        height: 7,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: const Color(0xFFEF4444).withValues(
-                                            alpha: 0.4 + (0.6 * _glowController.value),
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFFEF4444).withValues(alpha: 0.6),
-                                              blurRadius: 6,
-                                              spreadRadius: 1,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      'EN DIRECT',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                               const SizedBox(width: 8),
+                              Text(
+                                'EN DIRECT',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.podcasts_rounded,
-                                color: Colors.white,
-                                size: 22,
+                                color: Color(0xFFFBBF24),
+                                size: 18,
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
 
