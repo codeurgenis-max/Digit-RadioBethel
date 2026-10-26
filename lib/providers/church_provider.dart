@@ -267,9 +267,14 @@ class ChurchProvider with ChangeNotifier {
         final streamUrl = _radio?.streamUrl ?? '';
 
         if (kIsWeb) {
-          // === WEB: Use direct HTML5 Audio element ===
+          // === WEB: Use secure HTTPS proxy stream to prevent Mixed Content blocking ===
           try {
-            await _webPlayer!.play(streamUrl);
+            // If the stream is HTTP, route through our HTTPS backend proxy for browser compliance
+            final webUrl = streamUrl.startsWith('https://') 
+                ? streamUrl 
+                : 'https://digiteradio-xi.vercel.app/api/radio-stream';
+            
+            await _webPlayer!.play(webUrl);
             _isRadioPlaying = true;
             _isPlaying = false;
             _isLoading = false;
