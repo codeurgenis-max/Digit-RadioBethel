@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 import '../providers/church_provider.dart';
-import 'podcast_list_screen.dart';
 
 class RadioScreen extends StatefulWidget {
   const RadioScreen({super.key});
@@ -98,23 +97,8 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Menu Hamburger
-                          IconButton(
-                            onPressed: () {
-                              Scaffold.maybeOf(context)?.openDrawer();
-                            },
-                            icon: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.35),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                ),
-                              ),
-                              child: const Icon(Icons.menu_rounded, color: Colors.white, size: 22),
-                            ),
-                          ),
+                          // Espace équilibré à gauche pour centrer le logo
+                          const SizedBox(width: 48),
 
                           // Logo titre central
                           Column(
@@ -289,45 +273,7 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
                       ],
                     ),
 
-                    const SizedBox(height: 14),
-
-                    // Pilule rouge "● EN DIRECT" sous le cercle
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: const Color(0xFFDC2626),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFFEF4444),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'EN DIRECT',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     // --- TITRE ET SOUS-TITRE DU DIRECT ---
                     Text(
@@ -495,52 +441,8 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
                       ),
                     ),
 
-                    const Spacer(flex: 1),
-
-                    // --- LES 4 CARTES D'ACTIONS RAPIDES ---
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          _buildActionCard(
-                            icon: Icons.mic_rounded,
-                            title: 'Émissions',
-                            subtitle: 'Écouter',
-                            onTap: () {},
-                          ),
-                          const SizedBox(width: 10),
-                          _buildActionCard(
-                            icon: Icons.podcasts_rounded,
-                            title: 'Podcasts',
-                            subtitle: 'Découvrir',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const PodcastListScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 10),
-                          _buildActionCard(
-                            icon: Icons.music_note_rounded,
-                            title: 'Musique',
-                            subtitle: 'Nos playlists',
-                            onTap: () {},
-                          ),
-                          const SizedBox(width: 10),
-                          _buildActionCard(
-                            icon: Icons.more_horiz_rounded,
-                            title: 'Plus',
-                            subtitle: 'Encore +',
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
+                    const Spacer(flex: 2),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -608,64 +510,6 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
           },
         );
       }).toList(),
-    );
-  }
-
-  // Carte d'action rapide carrée semi-transparente
-  Widget _buildActionCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.45),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
-              width: 1.2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: const Color(0xFFFBBF24), size: 24),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  color: Colors.white54,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
