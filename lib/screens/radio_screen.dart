@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,22 +13,31 @@ class RadioScreen extends StatefulWidget {
   State<RadioScreen> createState() => _RadioScreenState();
 }
 
-class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStateMixin {
+class _RadioScreenState extends State<RadioScreen> with TickerProviderStateMixin {
   late AnimationController _glowController;
+  late AnimationController _waveController;
   bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
+    // Halo doux lent
     _glowController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1800),
     )..repeat(reverse: true);
+
+    // Contrôleur rapide et dynamique pour les ondes audio (rythme musical)
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
   }
 
   @override
   void dispose() {
     _glowController.dispose();
+    _waveController.dispose();
     super.dispose();
   }
 
@@ -476,32 +486,61 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
     );
   }
 
-  // Ondes dorées de chaque côté du cercle
+  // Ondes dorées vivantes et organiques de chaque côté du cercle
   Widget _buildWaveBars({required bool isLeft, required bool isPlaying}) {
-    final heights = [14.0, 22.0, 34.0, 44.0, 28.0];
-    final displayHeights = isLeft ? heights : heights.reversed.toList();
+    // 7 barres de spectre pour une dynamique riche
+    final baseHeights = [12.0, 18.0, 30.0, 48.0, 38.0, 24.0, 14.0];
+    final displayHeights = isLeft ? baseHeights : baseHeights.reversed.toList();
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: displayHeights.map((h) {
+      children: List.generate(displayHeights.length, (index) {
+        final baseH = displayHeights[index];
+        // Déphasage sinusoïdal unique pour chaque barre
+        final phaseOffset = (index * 0.9) + (isLeft ? 0.0 : math.pi);
+
         return AnimatedBuilder(
-          animation: _glowController,
+          animation: _waveController,
           builder: (context, child) {
-            final dynamicHeight = isPlaying
-                ? (h * (0.6 + 0.4 * _glowController.value))
-                : (h * 0.5);
+            double barHeight;
+            double opacity;
+
+            if (isPlaying) {
+              final t = _waveController.value * 2 * math.pi;
+              // Synthèse d'harmoniques pour simuler le beat musical
+              final harmonic1 = math.sin(t * 1.8 + phaseOffset);
+              final harmonic2 = math.cos(t * 2.6 + (phaseOffset * 1.5));
+              final wave = ((harmonic1.abs() * 0.65) + (harmonic2.abs() * 0.35));
+
+              barHeight = 8.0 + (wave * (baseH - 4.0));
+              opacity = 0.65 + (0.35 * wave);
+            } else {
+              // Mode repos / pause
+              barHeight = 6.0;
+              opacity = 0.3;
+            }
+
             return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 2),
+              margin: const EdgeInsets.symmetric(horizontal: 2.2),
               width: 3.5,
-              height: dynamicHeight,
+              height: barHeight,
               decoration: BoxDecoration(
-                color: const Color(0xFFFBBF24),
                 borderRadius: BorderRadius.circular(4),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    const Color(0xFFD97706).withValues(alpha: opacity),
+                    const Color(0xFFFBBF24).withValues(alpha: opacity),
+                    const Color(0xFFFEF3C7).withValues(alpha: opacity),
+                  ],
+                ),
                 boxShadow: isPlaying
                     ? [
                         BoxShadow(
-                          color: const Color(0xFFFBBF24).withValues(alpha: 0.6),
-                          blurRadius: 4,
+                          color: const Color(0xFFFBBF24).withValues(alpha: 0.5 * opacity),
+                          blurRadius: 6,
+                          spreadRadius: 1,
                         ),
                       ]
                     : [],
@@ -509,7 +548,7 @@ class _RadioScreenState extends State<RadioScreen> with SingleTickerProviderStat
             );
           },
         );
-      }).toList(),
+      }),
     );
   }
 }
