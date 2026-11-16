@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Eglise App</string>
+		<string>Digit'Radio Bethel</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -47,5 +47,14 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>audio</string>
+		</array>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
 	</dict>
 </plist>
