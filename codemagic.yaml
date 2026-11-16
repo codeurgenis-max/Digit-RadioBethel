@@ -16,14 +16,13 @@ workflows:
       cocoapods: default
 
     scripts:
-      - name: Set up code signing settings on Codemagic
+      - name: Set up keychain and fetch certificates
         script: |
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
           keychain add-certificates
-          xcode-project use-profiles
 
       - name: Get Flutter packages
         script: |
@@ -36,6 +35,10 @@ workflows:
       - name: Build Flutter iOS without codesign
         script: |
           flutter build ios --release --no-codesign
+
+      - name: Apply Provisioning Profiles to Xcode Project
+        script: |
+          xcode-project use-profiles
 
       - name: Package and sign IPA for App Store
         script: |
