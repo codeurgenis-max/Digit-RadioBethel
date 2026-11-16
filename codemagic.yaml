@@ -33,10 +33,15 @@ workflows:
         script: |
           cd ios && pod install --repo-update
 
-      - name: Build Flutter iOS IPA
+      - name: Build Flutter iOS without codesign
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ios --release --no-codesign
+
+      - name: Package and sign IPA for App Store
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
 
     artifacts:
       - build/ios/ipa/*.ipa
