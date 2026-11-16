@@ -9,7 +9,7 @@ on:
 jobs:
   build-ios:
     name: Build & Upload to App Store Connect
-    runs-on: macos-14 # Apple Silicon avec Xcode 16 récent pré-installé
+    runs-on: macos-15 # Apple Silicon M2 avec Xcode 16 par défaut
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
